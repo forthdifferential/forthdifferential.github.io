@@ -1,0 +1,560 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>C++ - 复习STL和泛型 | 个人主页</title><meta name="author" content="陈锴烺"><meta name="copyright" content="陈锴烺"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="第一讲：STL和泛型概述认识headers、版本、重要资源1STL1.C++标准库具有6大部件，使用的方法，认识、使用、扩充； 2.C++SL包括C++STL六大部件和其他零碎的 3.新式的headers内的组件封装在namespace std STL体系架构六个部件 容器containers、分配器allocators、算法algorithms、迭代器iterators、适配器adapters、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++ - 复习STL和泛型">
+<meta property="og:url" content="https://forthdifferential.github.io/2023/11/03/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/index.html">
+<meta property="og:site_name" content="个人主页">
+<meta property="og:description" content="第一讲：STL和泛型概述认识headers、版本、重要资源1STL1.C++标准库具有6大部件，使用的方法，认识、使用、扩充； 2.C++SL包括C++STL六大部件和其他零碎的 3.新式的headers内的组件封装在namespace std STL体系架构六个部件 容器containers、分配器allocators、算法algorithms、迭代器iterators、适配器adapters、">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://forthdifferential.github.io/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/title.png">
+<meta property="article:published_time" content="2023-11-03T07:43:14.340Z">
+<meta property="article:modified_time" content="2023-11-03T08:20:11.736Z">
+<meta property="article:author" content="陈锴烺">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://forthdifferential.github.io/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/title.png"><link rel="shortcut icon" href="/imgs/head.ico"><link rel="canonical" href="https://forthdifferential.github.io/2023/11/03/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'C++ - 复习STL和泛型',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-03 16:20:11'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/imgs/head.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="个人主页"><span class="site-name">个人主页</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">C++ - 复习STL和泛型</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-03T07:43:14.340Z" title="发表于 2023-11-03 15:43:14">2023-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-03T08:20:11.736Z" title="更新于 2023-11-03 16:20:11">2023-11-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%9F%BA%E7%A1%80%E5%8D%9A%E5%AE%A2/">基础博客</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>17分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="C++ - 复习STL和泛型"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><h1 id="第一讲：STL和泛型概述"><a href="#第一讲：STL和泛型概述" class="headerlink" title="第一讲：STL和泛型概述"></a>第一讲：STL和泛型概述</h1><h2 id="认识headers、版本、重要资源"><a href="#认识headers、版本、重要资源" class="headerlink" title="认识headers、版本、重要资源"></a>认识headers、版本、重要资源</h2><h4 id="1STL"><a href="#1STL" class="headerlink" title="1STL"></a>1STL</h4><p>1.C++标准库具有6大部件，使用的方法，认识、使用、扩充；</p>
+<p>2.C++SL包括C++STL六大部件和其他零碎的</p>
+<p>3.新式的headers内的组件封装在namespace std</p>
+<h2 id="STL体系架构"><a href="#STL体系架构" class="headerlink" title="STL体系架构"></a>STL体系架构</h2><h4 id="六个部件"><a href="#六个部件" class="headerlink" title="六个部件"></a>六个部件</h4><ol>
+<li>容器containers、分配器allocators、算法algorithms、迭代器iterators、适配器adapters、仿函数Functors</li>
+</ol>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221007201443143.png" alt="image-20221007201443143"></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取大于等于40的数</span></span><br><span class="line"><span class="type">int</span> ia[<span class="number">6</span>]=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>&#125;;</span><br><span class="line">vector&lt;<span class="type">int</span>,allocator&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">vi</span>(ia,ia+<span class="number">6</span>);</span><br><span class="line">cout&lt;&lt;<span class="built_in">count_if</span>(vi.<span class="built_in">begin</span>(),vi.<span class="built_in">end</span>(),<span class="built_in">not1</span>(<span class="built_in">bind2nd</span>(<span class="built_in">less</span>&lt;<span class="type">int</span>&gt;(),<span class="number">40</span>)));</span><br></pre></td></tr></table></figure>
+
+<p>not1(bind2nd(less<int>(),40))为一个predicate，谓词</p>
+<ol start="2">
+<li>复杂度Big-oh 其中n为一个比较大的规模</li>
+</ol>
+<h4 id="“前闭后开”区间用于标准库容器；"><a href="#“前闭后开”区间用于标准库容器；" class="headerlink" title="“前闭后开”区间用于标准库容器；"></a>“前闭后开”区间用于标准库容器；</h4><p>3.1 迭代器定义一<code>contianer&lt;T&gt;::iterator ite =c.begin()</code><br>3.2 <code>for(decl:coll)&#123;statement&#125;</code><br>3.3 <code>for(auto&amp; elem:vec)&#123;elem*=3&#125;;</code></p>
+<h2 id="容器之分类与各种测试"><a href="#容器之分类与各种测试" class="headerlink" title="容器之分类与各种测试"></a>容器之分类与各种测试</h2><h4 id="容器分类"><a href="#容器分类" class="headerlink" title="容器分类"></a>容器分类</h4><p>sequence contaniners：array、vector 、deque、list、forward_list</p>
+<p>associative contanniers：set&#x2F;multiset、map&#x2F;multimap（STL没有规定怎么实现，一般编译器采用红黑树实现）</p>
+<p>unordered contaniners不定序：unordered_(hash table实现，其用separate chaining创建)</p>
+<ul>
+<li>呼叫时间调用clock()</li>
+<li>全局函数前面加上::，比如<code>::find</code></li>
+<li>容器自身算法有的时候，用容器自身的</li>
+</ul>
+<h4 id="容器扩充"><a href="#容器扩充" class="headerlink" title="容器扩充"></a>容器扩充</h4><p>vector的扩展是两倍扩展，新空间并拷贝原值</p>
+<p>forward_list,一个个扩充</p>
+<p>deque，左右边界满，扩充</p>
+<h2 id="分配器"><a href="#分配器" class="headerlink" title="分配器"></a>分配器</h2><p>一个类，不建议单独使用，应该用容器本身或者new和delete</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *p;</span><br><span class="line">allocator&lt;<span class="type">int</span>&gt; alloc1;</span><br><span class="line">p=alloc1.<span class="built_in">allocator</span>(<span class="number">1</span>);</span><br><span class="line">alloc1.<span class="built_in">deallocate</span>(p,<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="源代码之分布（VC，GCC）"><a href="#源代码之分布（VC，GCC）" class="headerlink" title="源代码之分布（VC，GCC）"></a>源代码之分布（VC，GCC）</h2><p>2.91源代码的说明</p>
+<h3 id="泛型GP和OOP"><a href="#泛型GP和OOP" class="headerlink" title="泛型GP和OOP"></a>泛型GP和OOP</h3><p>OOP（objective-Oriented programming）企图将date和methods合在一起；</p>
+<p>GP(generic programming)将date和methods分开来</p>
+<ul>
+<li>list不能用sort()，因为不能随机访问，也就不能用二分查找</li>
+</ul>
+<blockquote>
+<p>所有algorithms，其内最终设计元素本身的操作，无非就是比大小；所以类型本身类需要重载比大小操作符</p>
+</blockquote>
+<h3 id="基础回顾"><a href="#基础回顾" class="headerlink" title="基础回顾"></a>基础回顾</h3><ol>
+<li>函数模板 <code>template &lt;typename T&gt;</code></li>
+<li>类模板 <code>template &lt;class T&gt;</code></li>
+<li>成员模板</li>
+</ol>
+<h4 id="类模板中泛化、特化、偏特化"><a href="#类模板中泛化、特化、偏特化" class="headerlink" title="类模板中泛化、特化、偏特化"></a>类模板中泛化、特化、偏特化</h4><h5 id="泛化：操作符重载和模板的复习"><a href="#泛化：操作符重载和模板的复习" class="headerlink" title="泛化：操作符重载和模板的复习"></a>泛化：操作符重载和模板的复习</h5><h5 id="Specialization-特化（全特化）"><a href="#Specialization-特化（全特化）" class="headerlink" title="Specialization 特化（全特化）"></a>Specialization 特化（全特化）</h5><p>在泛化的模板基础上，指定类型</p>
+<p>也就是 <code>class allocator&lt;void&gt;</code> 指定了 _Tp为void类型</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008165726014.png" alt="image-20221008165726014"></p>
+<h5 id="Partial-Specialization-偏特化"><a href="#Partial-Specialization-偏特化" class="headerlink" title="Partial Specialization 偏特化"></a>Partial Specialization 偏特化</h5><p>分为</p>
+<ol>
+<li>数量上（多参数中某些特化）</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//先声明类模板</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">T1</span>,<span class="keyword">class</span> <span class="title class_">T2</span>&gt; <span class="keyword">class</span> <span class="title class_">People</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//类的偏特化 </span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">T1</span>&gt; </span><br><span class="line">    <span class="comment">// 这句指定了偏特化T2类型到T1</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">People</span>&lt;T1, <span class="type">int</span>&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(T1 a, <span class="type">int</span> b)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		cout &lt;&lt; <span class="string">&quot;(T1 a, int b)&quot;</span> &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>范围上(随意类型到指针 特化为 指针类型 或者const类型)</li>
+</ol>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008165747920.png" alt="image-20221008165747920"></p>
+<h1 id="第二讲：STL容器解析"><a href="#第二讲：STL容器解析" class="headerlink" title="第二讲：STL容器解析"></a>第二讲：STL容器解析</h1><h2 id="分配器allocator"><a href="#分配器allocator" class="headerlink" title="分配器allocator"></a>分配器allocator</h2><p>学习目的：理解效率，不要单独用</p>
+<p>operator new()实际上使用malloc（）</p>
+<h5 id="malloc-的理解"><a href="#malloc-的理解" class="headerlink" title="malloc()的理解"></a>malloc()的理解</h5><p>底层都是malloc()和free()使用分配内存;</p>
+<p>malloc()分配时有额外的开销；</p>
+<h5 id="allocators-的两个成员函数"><a href="#allocators-的两个成员函数" class="headerlink" title="allocators()的两个成员函数"></a>allocators()的两个成员函数</h5><p>VC6+中的allocate和deallocate，只是::operator new和::operator delete完成的；</p>
+<p>GC和BC都也是malloc，额外开销有点大；</p>
+<h2 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h2><h3 id="容器之间的关系"><a href="#容器之间的关系" class="headerlink" title="容器之间的关系"></a>容器之间的关系</h3><p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008173455125.png" alt="image-20221008173455125"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008173745929.png" alt="image-20221008173745929"></p>
+<h3 id="list"><a href="#list" class="headerlink" title="list"></a>list</h3><p><strong>实际上里面只有一个指针（G2.9）,G4.9里存了两个指针</strong>		</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008202939418.png" alt="image-20221008202939418"></p>
+<p>void* 无类型指针：void指针可以指向任意类型的数据，亦即可用任意数据类型的指针对void指针赋值。</p>
+<h4 id="简要包括"><a href="#简要包括" class="headerlink" title="简要包括"></a>简要包括</h4><ol>
+<li>一堆typedef</li>
+<li>每个节点的设计</li>
+<li>一些操作符重载</li>
+</ol>
+<h4 id="操作符重载的-符"><a href="#操作符重载的-符" class="headerlink" title="操作符重载的++符"></a>操作符重载的++符</h4><p>前++重载函数无入参；后++一个入参。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">self&amp; <span class="keyword">operator</span>++()&#123;node=(link_type)((*node).next); <span class="keyword">return</span> *<span class="keyword">this</span>;&#125;<span class="comment">//前++</span></span><br><span class="line">self <span class="keyword">operator</span>++(<span class="type">int</span>)&#123;self tmp=*<span class="keyword">this</span>; ++*<span class="keyword">this</span>; <span class="keyword">return</span> tmp;&#125;<span class="comment">//后++（用后++去调用前++）</span></span><br></pre></td></tr></table></figure>
+
+<p>C++不允许后++两次；</p>
+<h4 id="操作符重载"><a href="#操作符重载" class="headerlink" title="操作符重载*"></a>操作符重载*</h4><p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008203508483.png" alt="image-20221008203508483"></p>
+<h4 id="G4-9对G2-9的改进"><a href="#G4-9对G2-9的改进" class="headerlink" title="G4.9对G2.9的改进"></a>G4.9对G2.9的改进</h4><p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008203703884.png" alt="image-20221008203703884"></p>
+<h4 id="Iterator需要遵循的原则"><a href="#Iterator需要遵循的原则" class="headerlink" title="Iterator需要遵循的原则"></a>Iterator需要遵循的原则</h4><h6 id="iterator的五种associated-type需要定义出来，以便回答算法调用时的提问；"><a href="#iterator的五种associated-type需要定义出来，以便回答算法调用时的提问；" class="headerlink" title="iterator的五种associated type需要定义出来，以便回答算法调用时的提问；"></a>iterator的五种associated type需要定义出来，以便回答算法调用时的提问；</h6><p>value_type 	元素类型</p>
+<p>difference_type	距离类型</p>
+<p>iterator_category 迭代器类型：</p>
+<blockquote>
+<p>1、input_iterator：istream独有的迭代器。<br>2、output_iterator：ostream独有的迭代器。<br>3、forward_iterator：继承自input_iterator，单向走的迭代器，只能走一个，不能跳。如forward_list、单向list的hashtable<br>4、bidirectional_iterator：继承自forward_iterator，双向走的迭代器，只能走一个，不能跳。如list、rb-tree、双向list的hashtable<br>5、random_access_iterator：继承自bidirectional_iterator，可以跳的迭代器。如array、vector、deque。</p>
+</blockquote>
+<p>reference</p>
+<p>pointer</p>
+<p>后两种从来没用到</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008205733573.png" alt="image-20221008205733573"></p>
+<h4 id="萃取traits特性"><a href="#萃取traits特性" class="headerlink" title="萃取traits特性"></a>萃取traits特性</h4><p>如果iterator不是一个类，而是指针，不能用typedef咋办？？？？</p>
+<p>方法是增加中间层——萃取机iterator_traits</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008210535103.png" alt="image-20221008210535103"></p>
+<p>第一种是问I，第二种用偏特化区别指针和常量指针</p>
+<h3 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h3><p><strong>实际上是三个指针，大小为12</strong></p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008211832130.png" alt="image-20221008211832130"></p>
+<h4 id="容量扩充函数的实现"><a href="#容量扩充函数的实现" class="headerlink" title="容量扩充函数的实现"></a>容量扩充函数的实现</h4><p>当容量不够了，找新空间并两倍成长（有的时候是1.5 看版本），拷贝前部，拷贝后部</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008213508832.png" alt="image-20221008213508832"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221008213538716.png" alt="image-20221008213538716"></p>
+<h4 id="traits特性"><a href="#traits特性" class="headerlink" title="traits特性"></a>traits特性</h4><p>G2.9也是依靠萃取机作为中介，区分指针和迭代器类；G4.9也是，只是typedef很多次，评价为乱七八糟</p>
+<h3 id="array"><a href="#array" class="headerlink" title="array"></a>array</h3><p>没有构造、析构函数</p>
+<p>array&lt;int ,10&gt; myArray;</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011133911387.png" alt="image-20221011133911387"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011134049430.png" alt="image-20221011134049430"></p>
+<h3 id="forward-list"><a href="#forward-list" class="headerlink" title="forward_list"></a>forward_list</h3><p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011134328233.png" alt="image-20221011134328233"></p>
+<h3 id="deque"><a href="#deque" class="headerlink" title="deque"></a>deque</h3><ol>
+<li><p>分段连续；</p>
+</li>
+<li><p>扩充时分配新的缓冲区，并且指针指向；</p>
+</li>
+<li><p>iterator有四个元素，node指向控制中心；当cur到达last后，需要通过node指向下一个buffer；</p>
+</li>
+<li><p>控制中心是vector，当缓冲区数量不够的时候，两倍增长；</p>
+</li>
+</ol>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011135259752.png" alt="image-20221011135259752"></p>
+<h4 id="简要包括-1"><a href="#简要包括-1" class="headerlink" title="简要包括"></a>简要包括</h4><p>start和finish(iterator)，一个map(T**) ,一个map_type(size_type);其中iterator有四个元素，大小是16；</p>
+<p>总大小是16+16+4+4&#x3D;40；</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011140426560.png" alt="image-20221011140426560"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011141436990.png" alt="image-20221011141436990"></p>
+<h4 id="insert"><a href="#insert" class="headerlink" title="insert"></a>insert</h4><p>判断指定位置靠近头还是尾&#x3D;》推动原来的元素往前或往后&#x3D;》在指定位置插入新元素</p>
+<h4 id="deque如何模拟连续空间"><a href="#deque如何模拟连续空间" class="headerlink" title="deque如何模拟连续空间"></a>deque如何模拟连续空间</h4><p>全部都是iterator的功劳</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011141645219.png" alt="image-20221011141645219"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011142440111.png" alt="image-20221011142440111"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011142457558.png" alt="image-20221011142457558"></p>
+<ol>
+<li><p>++调用set_node；–先判断cur</p>
+</li>
+<li><p>后++调用前++</p>
+</li>
+<li><p>+调用+&#x3D;；+&#x3D;的时候，判断有没有超出当前缓冲区，并调整缓冲区位置</p>
+</li>
+<li><p>-调用-&#x3D;；-&#x3D;调用+&#x3D;{return *this +&#x3D; -n;}</p>
+</li>
+</ol>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011142758686.png" alt="image-20221011142758686"></p>
+<h4 id="G4-9对G2-9的改进-1"><a href="#G4-9对G2-9的改进-1" class="headerlink" title="G4.9对G2.9的改进"></a>G4.9对G2.9的改进</h4><ol>
+<li>deque类继承；</li>
+<li>入参去掉了buffer_size，只有两个了</li>
+</ol>
+<h3 id="queue和stack"><a href="#queue和stack" class="headerlink" title="queue和stack"></a>queue和stack</h3><p>这两个是容器适配器；</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011150245087.png" alt="image-20221011150245087"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011150254672.png" alt="image-20221011150254672"></p>
+<h5 id="一些特性："><a href="#一些特性：" class="headerlink" title="一些特性："></a>一些特性：</h5><ol>
+<li>不允许遍历，不提供iterator；</li>
+<li>包含deque，并且封锁一些接口；这两者实际上list也可以作为底层容器，但是慢；stack也可以用vector作为底层容器，queue不能，因为没有pop()操作；都不能用set和map作为底层；</li>
+</ol>
+<h3 id="RB-Tree"><a href="#RB-Tree" class="headerlink" title="RB-Tree"></a>RB-Tree</h3><h4 id="红黑树特性"><a href="#红黑树特性" class="headerlink" title="红黑树特性"></a>红黑树特性</h4><p>红黑树是平衡二叉搜索树中常被使用的一种；排序规则有利search和insert，并保持高度平衡；</p>
+<p>红黑树提供遍历和iterators；按照正常规则遍历，就能得到排序状态；</p>
+<p>不应使用iterators改变元素值，但是编程里面有没有禁止此。如此设计，是因为rb_tree即将为set和map服务，map允许元素的date被改变，只有元素的key才是不可改变的；</p>
+<p>红黑树提供两种insertion操作：inset_unique()和insert_equal()</p>
+<h4 id="容器re-tree"><a href="#容器re-tree" class="headerlink" title="容器re_tree"></a>容器re_tree</h4><p>value分为key和date两部分</p>
+<p>模板参数5个</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011154503636.png" alt="image-20221011154503636"></p>
+<p>使用举例</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011155147816.png" alt="image-20221011155147816"></p>
+<h4 id="G4-9对G2-9的修改"><a href="#G4-9对G2-9的修改" class="headerlink" title="G4.9对G2.9的修改"></a>G4.9对G2.9的修改</h4><p>改为容器_Rb_tree</p>
+<p>新版是24个字节</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011155838022.png" alt="image-20221011155838022"></p>
+<h3 id="set-x2F-multiset"><a href="#set-x2F-multiset" class="headerlink" title="set&#x2F;multiset"></a>set&#x2F;multiset</h3><p>内含红黑树，set也是一个container adapter容器适配器</p>
+<p>set的key就是value；</p>
+<p>set的迭代器是const_iterator，不能修改</p>
+<p>inset_unique()和insert_equal()的区别</p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011215003032.png" alt="image-20221011215003032"></p>
+<h3 id="map-x2F-multimap"><a href="#map-x2F-multimap" class="headerlink" title="map&#x2F;multimap"></a>map&#x2F;multimap</h3><p>以rb_tree为底层结构，自动排序</p>
+<p>无法用iterators改变元素的key，但是可以改变date；底层实现的iterator就是红黑树的，不做任何约束，但是在模板参数设置时<code>pair&lt;const Key,T&gt; value_type</code>  </p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011221046294.png" alt="image-20221011221046294"></p>
+<p>multimap不能用[]插入</p>
+<blockquote>
+<p>lower_bound二分查找，在有序数列中查找与value相同第一元素的迭代器，如果没有则返回第一个&gt;&#x3D;value的元素的迭代器，再没有就返回end()；也就是说不破坏排序得以安插value的第一个适当的位置;</p>
+</blockquote>
+<p> <strong>既然[]判断元素不存在的时候，也是调用insert，直接调用insert比较快</strong></p>
+<p><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/image-20221011221344136.png" alt="image-20221011221344136"></p>
+<h3 id="hashtable"><a href="#hashtable" class="headerlink" title="hashtable"></a>hashtable</h3><p>散列表比红黑树简单</p>
+<p>如果发送碰撞，用链表串Separate Chaining在一起;但是链表太长（元素个数比桶个数多），要把它打散，就是把桶扩大一倍，并取最近的素数（实际上备选的list中元素已经预选好）作为新的桶个数，所有元素重新计算一遍；</p>
+<p>![image-20221011223731538](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221011223731538.png)</p>
+<p>模板参数6个：Value, Key, HasFcn, ExtractKey, EqualKey, Alloc</p>
+<p>Data大小19(20)：hash(1), equals(1), get_key(1), buckets(12),num_elements(4)</p>
+<p>![image-20221013160407487](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013160407487.png)</p>
+<p>HashFunction的设置</p>
+<p>![image-20221013163528922](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013163528922.png)</p>
+<h3 id="unordered容器"><a href="#unordered容器" class="headerlink" title="unordered容器"></a>unordered容器</h3><p>![image-20221013164353617](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013164353617.png)</p>
+<h1 id="第三讲：STL算法"><a href="#第三讲：STL算法" class="headerlink" title="第三讲：STL算法"></a>第三讲：STL算法</h1><p>算法是模板函数，其他都是模板类；</p>
+<p>算法看不到容器，所有信息都由迭代器告知</p>
+<p>两种形式，包含Cmp和不包含：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Iterator,<span class="keyword">typename</span> Cmp&gt;</span></span><br><span class="line"><span class="function"><span class="title">Algorithm</span><span class="params">(Iterator itr1,Iterator it2,Cmp comp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><p>Random Access和不能；双向和单向</p>
+<h3 id="迭代器的分类继承图"><a href="#迭代器的分类继承图" class="headerlink" title="迭代器的分类继承图"></a>迭代器的分类继承图</h3><p>这样的好处是，用萃取提取迭代器的类型是，可以用不同入参的类型重载提取函数</p>
+<p>![image-20221013170117951](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013170117951.png)</p>
+<p>![image-20221013170857286](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013170857286.png)</p>
+<p>在头文件typeinfo中函数typeid()，能得到编译后的类型名称</p>
+<p>![image-20221013170950813](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013170950813.png)</p>
+<h3 id="istream-iterator和ostrean-iteraror"><a href="#istream-iterator和ostrean-iteraror" class="headerlink" title="istream_iterator和ostrean_iteraror"></a>istream_iterator和ostrean_iteraror</h3><p>这两种的iterator_category</p>
+<p>![image-20221013171729243](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013171729243.png)</p>
+<p>![image-20221013171734578](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013171734578.png)</p>
+<h3 id="逆向迭代器reverse-iterator"><a href="#逆向迭代器reverse-iterator" class="headerlink" title="逆向迭代器reverse_iterator"></a>逆向迭代器reverse_iterator</h3><p>调用迭代器适配器</p>
+<p>![image-20221014140726217](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014140726217.png)</p>
+<h3 id="iterator对算法的影响"><a href="#iterator对算法的影响" class="headerlink" title="iterator对算法的影响"></a>iterator对算法的影响</h3><h4 id="distance算法"><a href="#distance算法" class="headerlink" title="distance算法"></a>distance算法</h4><p>：返回值，输入参数</p>
+<ol>
+<li>其中randomaccess类型只需要相减，但是input类型只能一步步操作，差异非常大</li>
+<li>distance()调用子函数_distance()的不同重载，这是常见的处理方法</li>
+</ol>
+<p>![image-20221013190247992](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013190247992.png)</p>
+<h4 id="advance-算法"><a href="#advance-算法" class="headerlink" title="advance()算法"></a>advance()算法</h4><p>与distance不同，这里用iterator_category()函数返回迭代器的类型</p>
+<p>![image-20221013191224717](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013191224717.png)</p>
+<h4 id="copy-算法"><a href="#copy-算法" class="headerlink" title="copy()算法"></a>copy()算法</h4><p>![image-20221013194550327](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013194550327.png)</p>
+<h4 id="destroy-算法"><a href="#destroy-算法" class="headerlink" title="destroy()算法"></a>destroy()算法</h4><p>![image-20221013192424286](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013192424286.png)</p>
+<h4 id="unique-copy-算法"><a href="#unique-copy-算法" class="headerlink" title="unique_copy()算法"></a>unique_copy()算法</h4><p>![image-20221013192928038](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013192928038.png)</p>
+<h4 id="小结对算法的影响"><a href="#小结对算法的影响" class="headerlink" title="小结对算法的影响"></a>小结对算法的影响</h4><p>继承可以翻译为is a</p>
+<p>算法源码对迭代器类型的暗示是通过形参的名字告诉你，但是必须接受所有类型的迭代器；</p>
+<p>![image-20221013194419258](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221013194419258.png)</p>
+<h2 id="算法例子剖析"><a href="#算法例子剖析" class="headerlink" title="算法例子剖析"></a>算法例子剖析</h2><p>按照算法的标准样式，区别STL的算法和普通函数</p>
+<h3 id="算法例子11个"><a href="#算法例子11个" class="headerlink" title="算法例子11个"></a>算法例子11个</h3><h4 id="accumulate-算法"><a href="#accumulate-算法" class="headerlink" title="accumulate()算法"></a>accumulate()算法</h4><p>第三个参数可以是自定义函数或者仿函数的对象</p>
+<p>![image-20221014135321464](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014135321464.png)</p>
+<h4 id="for-each-算法"><a href="#for-each-算法" class="headerlink" title="for_each()算法"></a>for_each()算法</h4><p>![image-20221014135418453](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014135418453.png)</p>
+<h4 id="replace-算法"><a href="#replace-算法" class="headerlink" title="replace()算法"></a>replace()算法</h4><p>![image-20221014135440211](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014135440211.png)</p>
+<h4 id="count-算法"><a href="#count-算法" class="headerlink" title="count()算法"></a>count()算法</h4><p>迭代器类型非random_access的不能用</p>
+<p>关联容器用自带的快多了</p>
+<p>![image-20221014135546161](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014135546161.png)</p>
+<h4 id="find-算法"><a href="#find-算法" class="headerlink" title="find()算法"></a>find()算法</h4><p>迭代器类型非random_access的不能用</p>
+<p>关联容器用自带的快多了</p>
+<p>![image-20221014135744390](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014135744390.png)</p>
+<h4 id="sort-算法"><a href="#sort-算法" class="headerlink" title="sort()算法"></a>sort()算法</h4><p>关联容器自带排序的</p>
+<p>![image-20221014140156822](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014140156822.png)</p>
+<h4 id="binary-search-算法"><a href="#binary-search-算法" class="headerlink" title="binary_search()算法"></a>binary_search()算法</h4><p>调用lower_bound()二分搜寻</p>
+<p>归纳后：</p>
+<p>lower_bound( begin,end,num)：从数组的begin位置到end-1位置二分查找第一个大于或等于num的数字，找到返回该数字的地址，不存在则返回end。通过返回的地址减去起始地址begin,得到找到数字在数组中的下标。</p>
+<p>upper_bound( begin,end,num)：从数组的begin位置到end-1位置二分查找第一个大于num的数字，找到返回该数字的地址，不存在则返回end。通过返回的地址减去起始地址begin,得到找到数字在数组中的下标。</p>
+<p>![image-20221014141107968](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014141107968.png)</p>
+<h2 id="仿函数functors"><a href="#仿函数functors" class="headerlink" title="仿函数functors"></a>仿函数functors</h2><p>函数对象，类中重载小括号，STL定义很多仿函数</p>
+<p>![image-20221014143544712](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014143544712.png)</p>
+<h4 id="仿函数可适配的条件"><a href="#仿函数可适配的条件" class="headerlink" title="仿函数可适配的条件"></a>仿函数可适配的条件</h4><p>：需要继承一元和二元仿函数的基类，也就是unary_function或者binary_function其中一个。继承之后，才可回答被仿函数适配器的提问，实参的类型是什么。</p>
+<p>![image-20221014143605807](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014143605807.png)</p>
+<h2 id="适配器Adapters"><a href="#适配器Adapters" class="headerlink" title="适配器Adapters"></a>适配器Adapters</h2><p>改造器，要改造原有的部件的功能，用内含而不是继承的方式包含原有的部件</p>
+<p>存在多种适配器：Contanier Adapters, Functor Adapters, Iterator Adapters</p>
+<p>![image-20221014153946103](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014153946103.png)</p>
+<h3 id="容器适配器"><a href="#容器适配器" class="headerlink" title="容器适配器"></a>容器适配器</h3><p>stack,queue内含的deque并且改造函数接口</p>
+<p>![image-20221014153956095](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014153956095.png)</p>
+<h3 id="函数适配器"><a href="#函数适配器" class="headerlink" title="函数适配器"></a>函数适配器</h3><p>修饰function形成function的样子</p>
+<h4 id="bind2nd-函数和binder2nd函数对象"><a href="#bind2nd-函数和binder2nd函数对象" class="headerlink" title="bind2nd()函数和binder2nd函数对象"></a>bind2nd()函数和binder2nd函数对象</h4><ol>
+<li><p>less<int>()和40被记在binder2nd类的Data中，等之后类内operatpr()调用后再拿出来用；</p>
+</li>
+<li><p>bind2nd()函数返回临时对象binder2nd;</p>
+</li>
+<li><p>适配器操作后，需要询问算法的入参（1或2个参数的类型）和结果（返回值的类型）</p>
+</li>
+<li><p>![image-20221014154005666](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014154005666.png)</p>
+</li>
+</ol>
+<h4 id="新型适配器-，bind来取代原有的"><a href="#新型适配器-，bind来取代原有的" class="headerlink" title="新型适配器 ，bind来取代原有的"></a>新型适配器 ，bind来取代原有的</h4><p>![image-20221014154134036](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014154134036.png)</p>
+<h4 id="not1"><a href="#not1" class="headerlink" title="not1()"></a>not1()</h4><p>一元谓词；</p>
+<p>记录入参，返回<code>!pred</code>，C17已经弃用</p>
+<h4 id="bind-和占位符"><a href="#bind-和占位符" class="headerlink" title="bind()和占位符"></a>bind()和占位符</h4><p>新版STL中取代之前的函数对象和函数</p>
+<ol>
+<li>对于函数，绑定对象，设置占位符以备之后调用函数时作为入参；占位符<code>_1</code>和<code>_2</code>的就是参数的顺序</li>
+<li>还可以改变模板参数，绑定返回类型比如<code>bind&lt;int&gt; (my_divide,10,2)</code>;</li>
+<li>还可以把成员函数，绑定给要做用的对象，比如<code>auto f1=bind(&amp;MyPair::multiply,_1);f1(ten_two);</code></li>
+</ol>
+<p>![image-20221014155526664](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014155526664.png)</p>
+<p><strong>std::bind可以绑定</strong>：</p>
+<ol>
+<li>functions;</li>
+<li>function objects;&#x2F;&#x2F;这种是注释讲了，也就是把方程改为仿函数</li>
+<li>member functions,_1必须是个object地址;&#x2F;&#x2F;比如说<code>auto f1 = bind(&amp;MyPair::multiply,ten_two);</code></li>
+<li>date member，_1必须是某个object地址；&#x2F;&#x2F;比如说<code>auto f1 = bind(&amp;MyPair::b,_1);</code>,调用<code>f1(ten_two)</code>只会输出成员b的数，这个很特别</li>
+</ol>
+<h3 id="迭代器适配器"><a href="#迭代器适配器" class="headerlink" title="迭代器适配器"></a>迭代器适配器</h3><h4 id="reverse-iterator"><a href="#reverse-iterator" class="headerlink" title="reverse_iterator"></a>reverse_iterator</h4><p>![image-20221014162046483](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014162046483.png)</p>
+<h4 id="inserter"><a href="#inserter" class="headerlink" title="inserter"></a>inserter</h4><p>不同于赋值assign，重载操作符，使得&#x3D;变为insert操作</p>
+<p>![image-20221014163840295](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221014163840295.png)</p>
+<h3 id="X适配器"><a href="#X适配器" class="headerlink" title="X适配器"></a>X适配器</h3><h4 id="ostream-iterator"><a href="#ostream-iterator" class="headerlink" title="ostream_iterator"></a>ostream_iterator</h4><p>输出迭代器的适配器，直接用于输出;</p>
+<p>实现方式也是用重载算法的操作符operator&#x3D;为&lt;&lt;</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;<span class="type">int</span>&gt; myvector&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line"><span class="function">std::ostream_iterator&lt;<span class="type">int</span>&gt; <span class="title">out_it</span><span class="params">(std::cout,<span class="string">&quot;,&quot;</span>)</span></span>;</span><br><span class="line">std::<span class="built_in">copy</span>(myvector.<span class="built_in">begin</span>(),myvector.<span class="built_in">end</span>(),out_it);</span><br></pre></td></tr></table></figure>
+
+<p>![image-20221015113148564](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015113148564.png)</p>
+<h4 id="istream-iterator"><a href="#istream-iterator" class="headerlink" title="istream_iterator"></a>istream_iterator</h4><p>输出迭代器的适配器</p>
+<p>实现是重载算法的operator&#x3D;为&gt;&gt;</p>
+<p>没有参数的作为标兵，有参数的绑定输如cin，读当前it指向的值，++往下读；</p>
+<p>![image-20221015114603355](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015114603355.png)</p>
+<p>下面这个连算法的first和last迭代器都改为了iit和eos，但是算法流程框架没变，第三个参数insert(c,c.begin())重载了&#x3D;为insert操作；</p>
+<ul>
+<li>当创建了istream_iterator后，这个类自动实现++也就是立刻read，往下进行。</li>
+</ul>
+<p>![image-20221015114949021](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015114949021.png)</p>
+<h1 id="第四讲-STL其余体系结构"><a href="#第四讲-STL其余体系结构" class="headerlink" title="第四讲 STL其余体系结构"></a>第四讲 STL其余体系结构</h1><h3 id="一个万用的hash-fuction"><a href="#一个万用的hash-fuction" class="headerlink" title="一个万用的hash fuction"></a>一个万用的hash fuction</h3><ol>
+<li>其中…是省略一些参数的写法, <strong>variadic templates</strong>可变化的模板，可以放任意的参数</li>
+<li>每一个分出来seed，计算出，最后当做hashcode，一直到全部拆解完成加上hashcode</li>
+<li>hash_combine()中seed的计算用的是黄金分割</li>
+</ol>
+<p>![image-20221015150133530](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015150133530.png)</p>
+<p>用例尝试，作为unordered_set的hashfunction(第二参数)</p>
+<p>![image-20221015150909323](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015150909323.png)</p>
+<p>![image-20221015150932418](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015150932418.png)</p>
+<h3 id="tuple，用例"><a href="#tuple，用例" class="headerlink" title="tuple，用例"></a>tuple，用例</h3><p>一些数据的组合，相对于pair</p>
+<p>![image-20221015153445595](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015153445595.png)</p>
+<ol>
+<li>创建用括号初始化，也可以用make_tuple创建</li>
+<li>取出成员用get&lt;1&gt;(t1)</li>
+<li>整个tuple可以用于比较，相同成分的tuple比较，不同成分tuple的比较</li>
+<li>整个tuple可以互相赋值，整个tuple可以cout</li>
+<li>可以初始刷为具体的值，然后用tie绑定变量到值</li>
+<li>tuple_size<t1>::value可以得到tuple的成员数；tuple_element&lt;1,t1&gt;::type f1&#x3D;10可以获得指定元素的类型；</li>
+</ol>
+<h4 id="tuple实现"><a href="#tuple实现" class="headerlink" title="tuple实现"></a>tuple实现</h4><p>还是用到<strong>variadic templates</strong>；tuple类继承他自己，递归继承他的尾部，头部作为成员数据，用于声明变量；当为空就结束</p>
+<p>![image-20221015155218423](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015155218423.png)</p>
+<h3 id="type-traits原编程"><a href="#type-traits原编程" class="headerlink" title="type traits原编程"></a>type traits原编程</h3><p>C++ 提供元编程设施，诸如类型特性、编译时有理数算术，以及编译时整数序列。</p>
+<p>利用特化偏特化，判断构造函数、拷贝构造、析构函数等重不重要</p>
+<p>![image-20221015161257834](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015161257834.png)</p>
+<p>C++11中定义了很多的元编程，用于各种类型的查询</p>
+<p>![image-20221015161808849](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015161808849.png)</p>
+<p>![image-20221015161851035](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015161851035.png)</p>
+<h4 id="用traits分析string"><a href="#用traits分析string" class="headerlink" title="用traits分析string"></a>用traits分析string</h4><p>实际上使用string，是调用<code>basic_string&lt;char&gt;</code></p>
+<p>![image-20221015162105748](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015162105748.png)</p>
+<h4 id="traits实现"><a href="#traits实现" class="headerlink" title="traits实现"></a>traits实现</h4><p>基本都是泛化和偏特化实现的</p>
+<p>remove_const和remove_volatile，用特化来拿掉</p>
+<p>_is_void用特化返回void类型，实现</p>
+<p>![image-20221015165340384](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015165340384.png)</p>
+<p>is_integral</p>
+<p>![image-20221015165633636](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015165633636.png)</p>
+<p>调用编译过程的接口，找不到源代码，grep的工具可以查看</p>
+<p>![image-20221015165652628](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015165652628.png)</p>
+<p>![image-20221015170030086](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015170030086.png)</p>
+<h3 id="cout"><a href="#cout" class="headerlink" title="cout"></a>cout</h3><p>cout的类型为_IO_ostream_withassign，继承自ostream，其中重载了和对不同入参的&lt;&lt;操作、</p>
+<p>![image-20221015170847219](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015170847219.png)</p>
+<p>![image-20221015170907392](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015170907392.png)</p>
+<h3 id="moveable元素（移动构造）"><a href="#moveable元素（移动构造）" class="headerlink" title="moveable元素（移动构造）"></a>moveable元素（移动构造）</h3><h4 id="对于vector速度效能的影响"><a href="#对于vector速度效能的影响" class="headerlink" title="对于vector速度效能的影响"></a>对于vector速度效能的影响</h4><p>加入move功能的容器，速度上效率会高</p>
+<p>其中MCtor是有move功能的构造函数。CCtor是没有move功能的构造函数。</p>
+<p>其中std::move()是有move的拷贝构造。</p>
+<h4 id="对list的影响"><a href="#对list的影响" class="headerlink" title="对list的影响"></a>对list的影响</h4><p>list是逐个创建，时间效率差距不大；deque其实也影响不大；</p>
+<p>但是除了创建，其他操作可能也有影响</p>
+<h4 id="一个moveable类"><a href="#一个moveable类" class="headerlink" title="一个moveable类"></a>一个moveable类</h4><p>是一种浅拷贝，并且在析构中判断是否要delete指针</p>
+<p>![image-20221015172804821](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015172804821.png)</p>
+<p>![image-20221015172812092](D:\OneDrive\OneDrive - whut.edu.cn\图床\image-20221015172812092.png)</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://forthdifferential.github.io">陈锴烺</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://forthdifferential.github.io/2023/11/03/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/">https://forthdifferential.github.io/2023/11/03/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://forthdifferential.github.io" target="_blank">个人主页</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/title.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/imgs/head.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">陈锴烺</div><div class="author-info__description">Every man is the master of his own fortune.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/forthdifferential"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/forthdifferential" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:klchen_auto@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><center><b>---Welcome to my blog---<br></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E8%AE%B2%EF%BC%9ASTL%E5%92%8C%E6%B3%9B%E5%9E%8B%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">第一讲：STL和泛型概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A4%E8%AF%86headers%E3%80%81%E7%89%88%E6%9C%AC%E3%80%81%E9%87%8D%E8%A6%81%E8%B5%84%E6%BA%90"><span class="toc-number">1.1.</span> <span class="toc-text">认识headers、版本、重要资源</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1STL"><span class="toc-number">1.1.0.1.</span> <span class="toc-text">1STL</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#STL%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">STL体系架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%AD%E4%B8%AA%E9%83%A8%E4%BB%B6"><span class="toc-number">1.2.0.1.</span> <span class="toc-text">六个部件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%80%9C%E5%89%8D%E9%97%AD%E5%90%8E%E5%BC%80%E2%80%9D%E5%8C%BA%E9%97%B4%E7%94%A8%E4%BA%8E%E6%A0%87%E5%87%86%E5%BA%93%E5%AE%B9%E5%99%A8%EF%BC%9B"><span class="toc-number">1.2.0.2.</span> <span class="toc-text">“前闭后开”区间用于标准库容器；</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E4%B9%8B%E5%88%86%E7%B1%BB%E4%B8%8E%E5%90%84%E7%A7%8D%E6%B5%8B%E8%AF%95"><span class="toc-number">1.3.</span> <span class="toc-text">容器之分类与各种测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E5%88%86%E7%B1%BB"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">容器分类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E6%89%A9%E5%85%85"><span class="toc-number">1.3.0.2.</span> <span class="toc-text">容器扩充</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E9%85%8D%E5%99%A8"><span class="toc-number">1.4.</span> <span class="toc-text">分配器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BA%90%E4%BB%A3%E7%A0%81%E4%B9%8B%E5%88%86%E5%B8%83%EF%BC%88VC%EF%BC%8CGCC%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">源代码之分布（VC，GCC）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8BGP%E5%92%8COOP"><span class="toc-number">1.5.1.</span> <span class="toc-text">泛型GP和OOP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.5.2.</span> <span class="toc-text">基础回顾</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%AD%E6%B3%9B%E5%8C%96%E3%80%81%E7%89%B9%E5%8C%96%E3%80%81%E5%81%8F%E7%89%B9%E5%8C%96"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">类模板中泛化、特化、偏特化</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B3%9B%E5%8C%96%EF%BC%9A%E6%93%8D%E4%BD%9C%E7%AC%A6%E9%87%8D%E8%BD%BD%E5%92%8C%E6%A8%A1%E6%9D%BF%E7%9A%84%E5%A4%8D%E4%B9%A0"><span class="toc-number">1.5.2.1.1.</span> <span class="toc-text">泛化：操作符重载和模板的复习</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Specialization-%E7%89%B9%E5%8C%96%EF%BC%88%E5%85%A8%E7%89%B9%E5%8C%96%EF%BC%89"><span class="toc-number">1.5.2.1.2.</span> <span class="toc-text">Specialization 特化（全特化）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Partial-Specialization-%E5%81%8F%E7%89%B9%E5%8C%96"><span class="toc-number">1.5.2.1.3.</span> <span class="toc-text">Partial Specialization 偏特化</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E8%AE%B2%EF%BC%9ASTL%E5%AE%B9%E5%99%A8%E8%A7%A3%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">第二讲：STL容器解析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E9%85%8D%E5%99%A8allocator"><span class="toc-number">2.1.</span> <span class="toc-text">分配器allocator</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#malloc-%E7%9A%84%E7%90%86%E8%A7%A3"><span class="toc-number">2.1.0.0.1.</span> <span class="toc-text">malloc()的理解</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#allocators-%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><span class="toc-number">2.1.0.0.2.</span> <span class="toc-text">allocators()的两个成员函数</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8"><span class="toc-number">2.2.</span> <span class="toc-text">容器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">2.2.1.</span> <span class="toc-text">容器之间的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#list"><span class="toc-number">2.2.2.</span> <span class="toc-text">list</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E8%A6%81%E5%8C%85%E6%8B%AC"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">简要包括</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%AC%A6%E9%87%8D%E8%BD%BD%E7%9A%84-%E7%AC%A6"><span class="toc-number">2.2.2.2.</span> <span class="toc-text">操作符重载的++符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%AC%A6%E9%87%8D%E8%BD%BD"><span class="toc-number">2.2.2.3.</span> <span class="toc-text">操作符重载*</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#G4-9%E5%AF%B9G2-9%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">2.2.2.4.</span> <span class="toc-text">G4.9对G2.9的改进</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Iterator%E9%9C%80%E8%A6%81%E9%81%B5%E5%BE%AA%E7%9A%84%E5%8E%9F%E5%88%99"><span class="toc-number">2.2.2.5.</span> <span class="toc-text">Iterator需要遵循的原则</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#iterator%E7%9A%84%E4%BA%94%E7%A7%8Dassociated-type%E9%9C%80%E8%A6%81%E5%AE%9A%E4%B9%89%E5%87%BA%E6%9D%A5%EF%BC%8C%E4%BB%A5%E4%BE%BF%E5%9B%9E%E7%AD%94%E7%AE%97%E6%B3%95%E8%B0%83%E7%94%A8%E6%97%B6%E7%9A%84%E6%8F%90%E9%97%AE%EF%BC%9B"><span class="toc-number">2.2.2.5.0.1.</span> <span class="toc-text">iterator的五种associated type需要定义出来，以便回答算法调用时的提问；</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%90%83%E5%8F%96traits%E7%89%B9%E6%80%A7"><span class="toc-number">2.2.2.6.</span> <span class="toc-text">萃取traits特性</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vector"><span class="toc-number">2.2.3.</span> <span class="toc-text">vector</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%B9%E9%87%8F%E6%89%A9%E5%85%85%E5%87%BD%E6%95%B0%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.2.3.1.</span> <span class="toc-text">容量扩充函数的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#traits%E7%89%B9%E6%80%A7"><span class="toc-number">2.2.3.2.</span> <span class="toc-text">traits特性</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#array"><span class="toc-number">2.2.4.</span> <span class="toc-text">array</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#forward-list"><span class="toc-number">2.2.5.</span> <span class="toc-text">forward_list</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#deque"><span class="toc-number">2.2.6.</span> <span class="toc-text">deque</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E8%A6%81%E5%8C%85%E6%8B%AC-1"><span class="toc-number">2.2.6.1.</span> <span class="toc-text">简要包括</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#insert"><span class="toc-number">2.2.6.2.</span> <span class="toc-text">insert</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#deque%E5%A6%82%E4%BD%95%E6%A8%A1%E6%8B%9F%E8%BF%9E%E7%BB%AD%E7%A9%BA%E9%97%B4"><span class="toc-number">2.2.6.3.</span> <span class="toc-text">deque如何模拟连续空间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#G4-9%E5%AF%B9G2-9%E7%9A%84%E6%94%B9%E8%BF%9B-1"><span class="toc-number">2.2.6.4.</span> <span class="toc-text">G4.9对G2.9的改进</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#queue%E5%92%8Cstack"><span class="toc-number">2.2.7.</span> <span class="toc-text">queue和stack</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7%EF%BC%9A"><span class="toc-number">2.2.7.0.1.</span> <span class="toc-text">一些特性：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RB-Tree"><span class="toc-number">2.2.8.</span> <span class="toc-text">RB-Tree</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91%E7%89%B9%E6%80%A7"><span class="toc-number">2.2.8.1.</span> <span class="toc-text">红黑树特性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8re-tree"><span class="toc-number">2.2.8.2.</span> <span class="toc-text">容器re_tree</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#G4-9%E5%AF%B9G2-9%E7%9A%84%E4%BF%AE%E6%94%B9"><span class="toc-number">2.2.8.3.</span> <span class="toc-text">G4.9对G2.9的修改</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#set-x2F-multiset"><span class="toc-number">2.2.9.</span> <span class="toc-text">set&#x2F;multiset</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#map-x2F-multimap"><span class="toc-number">2.2.10.</span> <span class="toc-text">map&#x2F;multimap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hashtable"><span class="toc-number">2.2.11.</span> <span class="toc-text">hashtable</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unordered%E5%AE%B9%E5%99%A8"><span class="toc-number">2.2.12.</span> <span class="toc-text">unordered容器</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E8%AE%B2%EF%BC%9ASTL%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">第三讲：STL算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8"><span class="toc-number">3.1.</span> <span class="toc-text">迭代器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB%E7%BB%A7%E6%89%BF%E5%9B%BE"><span class="toc-number">3.1.1.</span> <span class="toc-text">迭代器的分类继承图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#istream-iterator%E5%92%8Costrean-iteraror"><span class="toc-number">3.1.2.</span> <span class="toc-text">istream_iterator和ostrean_iteraror</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%86%E5%90%91%E8%BF%AD%E4%BB%A3%E5%99%A8reverse-iterator"><span class="toc-number">3.1.3.</span> <span class="toc-text">逆向迭代器reverse_iterator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iterator%E5%AF%B9%E7%AE%97%E6%B3%95%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="toc-number">3.1.4.</span> <span class="toc-text">iterator对算法的影响</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#distance%E7%AE%97%E6%B3%95"><span class="toc-number">3.1.4.1.</span> <span class="toc-text">distance算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#advance-%E7%AE%97%E6%B3%95"><span class="toc-number">3.1.4.2.</span> <span class="toc-text">advance()算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#copy-%E7%AE%97%E6%B3%95"><span class="toc-number">3.1.4.3.</span> <span class="toc-text">copy()算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#destroy-%E7%AE%97%E6%B3%95"><span class="toc-number">3.1.4.4.</span> <span class="toc-text">destroy()算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#unique-copy-%E7%AE%97%E6%B3%95"><span class="toc-number">3.1.4.5.</span> <span class="toc-text">unique_copy()算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93%E5%AF%B9%E7%AE%97%E6%B3%95%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="toc-number">3.1.4.6.</span> <span class="toc-text">小结对算法的影响</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E4%BE%8B%E5%AD%90%E5%89%96%E6%9E%90"><span class="toc-number">3.2.</span> <span class="toc-text">算法例子剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E4%BE%8B%E5%AD%9011%E4%B8%AA"><span class="toc-number">3.2.1.</span> <span class="toc-text">算法例子11个</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#accumulate-%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">accumulate()算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#for-each-%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.1.2.</span> <span class="toc-text">for_each()算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#replace-%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.1.3.</span> <span class="toc-text">replace()算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#count-%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.1.4.</span> <span class="toc-text">count()算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#find-%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.1.5.</span> <span class="toc-text">find()算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sort-%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.1.6.</span> <span class="toc-text">sort()算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#binary-search-%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.1.7.</span> <span class="toc-text">binary_search()算法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BF%E5%87%BD%E6%95%B0functors"><span class="toc-number">3.3.</span> <span class="toc-text">仿函数functors</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%BF%E5%87%BD%E6%95%B0%E5%8F%AF%E9%80%82%E9%85%8D%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-number">3.3.0.1.</span> <span class="toc-text">仿函数可适配的条件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%82%E9%85%8D%E5%99%A8Adapters"><span class="toc-number">3.4.</span> <span class="toc-text">适配器Adapters</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E9%80%82%E9%85%8D%E5%99%A8"><span class="toc-number">3.4.1.</span> <span class="toc-text">容器适配器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E9%80%82%E9%85%8D%E5%99%A8"><span class="toc-number">3.4.2.</span> <span class="toc-text">函数适配器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#bind2nd-%E5%87%BD%E6%95%B0%E5%92%8Cbinder2nd%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1"><span class="toc-number">3.4.2.1.</span> <span class="toc-text">bind2nd()函数和binder2nd函数对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0%E5%9E%8B%E9%80%82%E9%85%8D%E5%99%A8-%EF%BC%8Cbind%E6%9D%A5%E5%8F%96%E4%BB%A3%E5%8E%9F%E6%9C%89%E7%9A%84"><span class="toc-number">3.4.2.2.</span> <span class="toc-text">新型适配器 ，bind来取代原有的</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#not1"><span class="toc-number">3.4.2.3.</span> <span class="toc-text">not1()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bind-%E5%92%8C%E5%8D%A0%E4%BD%8D%E7%AC%A6"><span class="toc-number">3.4.2.4.</span> <span class="toc-text">bind()和占位符</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E9%80%82%E9%85%8D%E5%99%A8"><span class="toc-number">3.4.3.</span> <span class="toc-text">迭代器适配器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#reverse-iterator"><span class="toc-number">3.4.3.1.</span> <span class="toc-text">reverse_iterator</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#inserter"><span class="toc-number">3.4.3.2.</span> <span class="toc-text">inserter</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#X%E9%80%82%E9%85%8D%E5%99%A8"><span class="toc-number">3.4.4.</span> <span class="toc-text">X适配器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ostream-iterator"><span class="toc-number">3.4.4.1.</span> <span class="toc-text">ostream_iterator</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#istream-iterator"><span class="toc-number">3.4.4.2.</span> <span class="toc-text">istream_iterator</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E8%AE%B2-STL%E5%85%B6%E4%BD%99%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">4.</span> <span class="toc-text">第四讲 STL其余体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%B8%87%E7%94%A8%E7%9A%84hash-fuction"><span class="toc-number">4.0.1.</span> <span class="toc-text">一个万用的hash fuction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tuple%EF%BC%8C%E7%94%A8%E4%BE%8B"><span class="toc-number">4.0.2.</span> <span class="toc-text">tuple，用例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tuple%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.0.2.1.</span> <span class="toc-text">tuple实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type-traits%E5%8E%9F%E7%BC%96%E7%A8%8B"><span class="toc-number">4.0.3.</span> <span class="toc-text">type traits原编程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8traits%E5%88%86%E6%9E%90string"><span class="toc-number">4.0.3.1.</span> <span class="toc-text">用traits分析string</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#traits%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.0.3.2.</span> <span class="toc-text">traits实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cout"><span class="toc-number">4.0.4.</span> <span class="toc-text">cout</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#moveable%E5%85%83%E7%B4%A0%EF%BC%88%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%EF%BC%89"><span class="toc-number">4.0.5.</span> <span class="toc-text">moveable元素（移动构造）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8Evector%E9%80%9F%E5%BA%A6%E6%95%88%E8%83%BD%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="toc-number">4.0.5.1.</span> <span class="toc-text">对于vector速度效能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9list%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="toc-number">4.0.5.2.</span> <span class="toc-text">对list的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%B8%AAmoveable%E7%B1%BB"><span class="toc-number">4.0.5.3.</span> <span class="toc-text">一个moveable类</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/11/03/ComputerSysMind/" title="计网 - 计算机网络复习思维导图"><img src="/imgs/$%7Bfiilename%7D/CompterSysMind/title.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="计网 - 计算机网络复习思维导图"/></a><div class="content"><a class="title" href="/2023/11/03/ComputerSysMind/" title="计网 - 计算机网络复习思维导图">计网 - 计算机网络复习思维导图</a><time datetime="2023-11-03T08:23:13.659Z" title="发表于 2023-11-03 16:23:13">2023-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/03/modelica%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Modelica - Modelica语言学习"><img src="/imgs/$%7Bfiilename%7D/modelica_title.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Modelica - Modelica语言学习"/></a><div class="content"><a class="title" href="/2023/11/03/modelica%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Modelica - Modelica语言学习">Modelica - Modelica语言学习</a><time datetime="2023-11-03T08:07:57.730Z" title="发表于 2023-11-03 16:07:57">2023-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/03/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/" title="C++ - 复习STL和泛型"><img src="/imgs/$%7Bfiilename%7D/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/title.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="C++ - 复习STL和泛型"/></a><div class="content"><a class="title" href="/2023/11/03/STL%E5%92%8C%E6%B3%9B%E5%9E%8B/" title="C++ - 复习STL和泛型">C++ - 复习STL和泛型</a><time datetime="2023-11-03T07:43:14.340Z" title="发表于 2023-11-03 15:43:14">2023-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/03/%E7%BD%91%E7%BB%9C%E6%98%AF%E6%80%8E%E6%A0%B7%E9%93%BE%E6%8E%A5%E7%9A%84/" title="计网 - 网络是怎样连接的"><img src="/imgs/$%7Bfiilename%7D/%E7%BD%91%E7%BB%9C%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%9E%E6%8E%A5%E7%9A%84/net_title.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="计网 - 网络是怎样连接的"/></a><div class="content"><a class="title" href="/2023/11/03/%E7%BD%91%E7%BB%9C%E6%98%AF%E6%80%8E%E6%A0%B7%E9%93%BE%E6%8E%A5%E7%9A%84/" title="计网 - 网络是怎样连接的">计网 - 网络是怎样连接的</a><time datetime="2023-11-03T07:10:19.273Z" title="发表于 2023-11-03 15:10:19">2023-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/03/ComputerNetMind/" title="计网 - 计算机网络复习思维导图"><img src="/imgs/$%7Bfiilename%7D/CompterNetMind/title.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="计网 - 计算机网络复习思维导图"/></a><div class="content"><a class="title" href="/2023/11/03/ComputerNetMind/" title="计网 - 计算机网络复习思维导图">计网 - 计算机网络复习思维导图</a><time datetime="2023-11-03T05:43:10.663Z" title="发表于 2023-11-03 13:43:10">2023-11-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By 陈锴烺</div><div class="footer_custom_text">I wish you to become your own sun, no need to rely on who's light.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速"></a> &nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Vervel-brightgreen?style=flat&logo=Vercel" title="本站采用双线部署，默认线路托管于Vercel"></a>&nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Coding-0cedbe?style=flat&logo=Codio" title="本站采用双线部署，联通线路托管于Coding"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
