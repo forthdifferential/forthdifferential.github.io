@@ -1,0 +1,362 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>分布式 - GFS论文阅读 | 个人主页</title><meta name="author" content="陈锴烺"><meta name="copyright" content="陈锴烺"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="GFSCAP理论①Consistency 一致性：所以节点访问同一份最新的数据副本。 ②Availability 可用性：所有读写请求在一定时间内得到非错响应，不会一直等待（但不能保证数据是最新的数据）。 ③Partition tolerance 分区容忍性：在网络分区的情况下，被分隔的节点仍然能够正常对外服务 对于一个分布式系统来说，三者只能取其二。 考虑对于分布式环境，P一定是存在的，没有网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式 - GFS论文阅读">
+<meta property="og:url" content="https://forthdifferential.github.io/2023/11/21/GFS%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/index.html">
+<meta property="og:site_name" content="个人主页">
+<meta property="og:description" content="GFSCAP理论①Consistency 一致性：所以节点访问同一份最新的数据副本。 ②Availability 可用性：所有读写请求在一定时间内得到非错响应，不会一直等待（但不能保证数据是最新的数据）。 ③Partition tolerance 分区容忍性：在网络分区的情况下，被分隔的节点仍然能够正常对外服务 对于一个分布式系统来说，三者只能取其二。 考虑对于分布式环境，P一定是存在的，没有网络">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://forthdifferential.github.io/imgs/$%7Bfiilename%7D/GFS/image-20230411161308484.png">
+<meta property="article:published_time" content="2023-11-21T11:01:26.674Z">
+<meta property="article:modified_time" content="2023-11-21T11:06:31.865Z">
+<meta property="article:author" content="陈锴烺">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://forthdifferential.github.io/imgs/$%7Bfiilename%7D/GFS/image-20230411161308484.png"><link rel="shortcut icon" href="/imgs/head.ico"><link rel="canonical" href="https://forthdifferential.github.io/2023/11/21/GFS%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '分布式 - GFS论文阅读',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-21 19:06:31'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/imgs/head.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="个人主页"><span class="site-name">个人主页</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">分布式 - GFS论文阅读</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-21T11:01:26.674Z" title="发表于 2023-11-21 19:01:26">2023-11-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-21T11:06:31.865Z" title="更新于 2023-11-21 19:06:31">2023-11-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="分布式 - GFS论文阅读"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="GFS"><a href="#GFS" class="headerlink" title="GFS"></a>GFS</h2><h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><p>①<strong>Consistency 一致性：</strong>所以节点访问同一份最新的数据副本。</p>
+<p>②<strong>Availability 可用性：</strong>所有读写请求在一定时间内得到<strong>非错</strong>响应，不会一直等待（但不能保证数据是最新的数据）。</p>
+<p>③<strong>Partition tolerance 分区容忍性：</strong>在网络分区的情况下，被分隔的节点仍然能够正常对外服务</p>
+<p>对于一个分布式系统来说，三者只能取其二。</p>
+<p>考虑对于分布式环境，P一定是存在的，没有网络分区和网络波动情况下，正常CAP，当出现网络分区的时候，那么一致性和可用性就要抛弃一个。</p>
+<p>PA：存在网络分区，那么网络中的节点之间就有可能数据不一致；比如往节点A中写入数据，B节点由于网络原因没有同步数据过去，如果此时往B节点读取数据是不能读到数据的，所以在存在网络分区的情况下，这个时候如果系统可用，那么数据是不可能保持一致的。</p>
+<p>PC：两个节点网络隔离了，想要保证数据一致性只能等待网络恢复，将数据同步，才能读取到数据；也就是说如果想要保证数据强一致性，那么在等待网络恢复的过程中，是不能对外提供服务的，这个时候系统就不可用。</p>
+<h4 id="高容错的实现难点："><a href="#高容错的实现难点：" class="headerlink" title="高容错的实现难点："></a>高容错的实现难点：</h4><ol>
+<li>高性能的要求 导致需要 <strong>跨机器对数据分片</strong></li>
+<li>大量计算机  导致必然 <strong>会有很多崩溃</strong></li>
+<li>容错解决奔溃情况 采用的机制是 <strong>副本</strong>；副本需要实施更新，保持副本一致；一致性高 必然导致 <strong>性能开销</strong>。</li>
+</ol>
+<h4 id="一致性实现的难点-："><a href="#一致性实现的难点-：" class="headerlink" title="一致性实现的难点 ："></a>一致性实现的难点 ：</h4><ol>
+<li>并发性，保证线程安全，可以通过之后的分布式锁等机制解决</li>
+<li>故障和失败案例 ：为了容错会用复制，但是不成熟的复制会导致读者在不做修改的情况下读到两次不同数据。</li>
+</ol>
+<h3 id="GFS简介"><a href="#GFS简介" class="headerlink" title="GFS简介"></a>GFS简介</h3><p> GFS旨在保持高性能，且有复制、容错机制，但很难保持一致性，现在谷歌已经不用了； 在论文中可以看到mapper从GFS系统(上千个磁盘)能够以超过10000MB&#x2F;s的速度读取数据。论文发表时，当时单个磁盘的读取速度大概是30MB&#x2F;s，一般在几十MB&#x2F;s左右。</p>
+<p>GFS的几个主要特征：</p>
+<ul>
+<li>Big：large data set，巨大的数据集</li>
+<li>Fast：automatic sharding，自动分片到多个磁盘</li>
+<li>Gloal：all apps see same files，所有应用程序从GFS读取数据时看到相同的文件（一致性）</li>
+<li>Fault tolerance：automic，尽可能自动地采取一些容错恢复操作</li>
+</ul>
+<p>GFS主要包含三种节点:</p>
+<p>• GFS client：维持专用接口，与应用交互。<br>• GFS master：维持元数据，统一管理chunk位置与租约。<br>• GFS chunkserver：存储数据</p>
+<p><img src="/imgs/$%7Bfiilename%7D/GFS/image-20230411161308484.png" alt="image-20230411161308484"></p>
+<h3 id="GFS存储设计"><a href="#GFS存储设计" class="headerlink" title="GFS存储设计"></a>GFS存储设计</h3><p>考虑到文件可能非常大，并且大小不均。GFS没有选择直接以文件为单位进行存储，而是把文件分为一个个chunk来存储。GFS把每个<strong>chunk</strong>设为64MB, 这个单位是比较大的</p>
+<p>chunk在chunkserver中的分布:</p>
+<img src="/imgs/$%7Bfiilename%7D/GFS/image-20231121185821822.png" alt="image-20231121185821822" style="zoom:80%;" />
+
+
+<h3 id="GFS的Master的工作"><a href="#GFS的Master的工作" class="headerlink" title="GFS的Master的工作"></a>GFS的Master的工作</h3><ul>
+<li><p>维护文件名到块句柄数组的映射(file name &#x3D;&gt; chunk handles)  <strong>filename -&gt; chunk handles -&gt; chunk server \  version</strong></p>
+<p>这些信息大多数存放在内存中，所以Master可以快速响应客户端Client</p>
+</li>
+<li><p>维护每个块句柄(chunk handle)的版本(version)</p>
+</li>
+<li><p>维护块存储服务器列表(list of chunk servers)</p>
+<ul>
+<li>主服务器(primary)<ul>
+<li>Master还需维护每一个主服务器(primary)的<strong>租赁时间(lease time)</strong></li>
+</ul>
+</li>
+<li>次要服务器(secondaries)<ul>
+<li>典型配置，即将chunk存储到3台服务器上</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>log+check point：通过日志和检查点机制维护文件系统。所有变更操作会先在log中记录，后续才响应Client。这样即使Master崩溃&#x2F;故障，重启时也能通过log恢复状态。master会定期创建自己状态的检查点，落到持久性存储上，重启&#x2F;恢复状态时只需重放log中最后一个check point检查点之后的所有操作，所以恢复也很快。</p>
+</li>
+</ul>
+<p> 这里需要思考的是，哪些数据需要放到稳定的存储中(比如磁盘)？</p>
+<ul>
+<li><p>比如file name &#x3D;&gt; chunk hanles的映射，平时已经在内存中存储了，还有必要存在稳定的存储中吗？</p>
+<p>需要，否则崩溃后恢复时，内存数据丢失，master无法索引某个具体的文件，相当于丢失了文件。</p>
+</li>
+<li><p>chunk handle 到 存放chunk的服务器列表，这一层映射关系，master需要稳定存储吗？</p>
+<p>不需要，master重启时会要求其他存储chunk数据的服务器说明自己维护的chunk handles数据。这里master只需要内存中维护即可。同样的，主服务器(primary)、次要服务器(secondaries)、主服务器(primary)的租赁时间(lease time)也都只需要在内存中即可。</p>
+</li>
+<li><p>chunk handle的version版本号信息呢，master需要稳定存储吗？</p>
+<p>需要。否则master崩溃重启时，master无法区分哪些chunk server存储的chunk最新的。比如可能有服务器存储的chunk version是14，由于网络问题，该服务器还没有拿到最新version 15的数据，master必须能够区分哪些server有最新version的chunk。</p>
+</li>
+</ul>
+<h3 id="GFS数据读取流程"><a href="#GFS数据读取流程" class="headerlink" title="GFS数据读取流程"></a>GFS数据读取流程</h3><p>GFS通过Master管理文件系统的元数据等信息，其他Client只能往GFS写入或读取数据。</p>
+<p>应用并发的通过GFS Client读取数据时，单个读取的大致流程如下：</p>
+<ol>
+<li>Client向Master发起读数据请求</li>
+<li>Master查询需要读取的数据对应的目录等信息，汇总文件块访问句柄、这些文件块所在的服务器节点信息给Client（大文件通常被拆分成多个块Chunk存放到不同服务器上，单个Chunk很大， 这里是64MB）</li>
+<li>Client得知需要读取的Chunk的信息后，直接和拥有这些Chunk的服务器网络通信传输Chunks</li>
+</ol>
+<h3 id="GFS文件读取"><a href="#GFS文件读取" class="headerlink" title="GFS文件读取"></a>GFS文件读取</h3><ol>
+<li>Client向Master发请求，要求读取X文件的Y偏移量的数据</li>
+<li>Master回复Client，X文件Y偏移量相关的块句柄、块服务器列表、版本号(chunk handle, list of chunk servers, version)</li>
+<li>Client 缓存cache块服务器列表(list of chunk servers)<br>理解： 只有一个Master，所以需要尽量减少Client和Server之间的通信次数，缓冲减少交互</li>
+<li>Client从最近的服务器请求chunk数据(reads from closest servers)<br>理解： 因为这样在宛如拓扑结构的网络中可以最大限度地减少网络流量(mininize network traffic)，提高整体系统的吞吐量</li>
+<li>被Client访问的chunk server检查version，version正确则返回数据<br>理解： 为了尽量避免客户端读到过时数据的情况。</li>
+</ol>
+<h3 id="GFS文件写入"><a href="#GFS文件写入" class="headerlink" title="GFS文件写入"></a>GFS文件写入</h3><p> 主要是关注文件写入的append操作，在mapreduce 中，reduce处理后计算结果需要append到file中</p>
+<img src="/imgs/$%7Bfiilename%7D/GFS/image-20230411165609018.png" alt="image-20230411165609018" style="zoom: 50%;" />
+
+<ol>
+<li><p>Client向Master发出请求，查询应该往哪里写入filename对应的文件。</p>
+</li>
+<li><p>Master查询filename到chunk handle映射关系的表，找到需要修改的chunk handle后，再查询chunk handle到<strong>chunk server数组映射关系的表</strong>，以list of chunk servers(主副本primary、secondaries、version信息)<strong>也就是得到所有该文件的chunkserver并且附加上版本号</strong>作为Client请求的响应结果</p>
+<p>接下去有两种情况，已有primary和没有primary(假设这是系统刚启动后不久，还没有primary)</p>
+<ul>
+<li><p>有primary，（<strong>primary：主文件副本，也就是正常情况下对外读写的文件；secondaries： 其他副本</strong>）</p>
+<p>继续后续流程</p>
+</li>
+<li><p>无primary</p>
+<ul>
+<li><p>master在chunk servers中选出一个作为primary，其余的chunk server作为secondaries</p>
+<p>(暂时不考虑选出的细节和步骤)</p>
+<ul>
+<li>master会增加version（每次有<strong>新的primary</strong>时，都需要考虑时进入了一个new epoch，所以需要<strong>维护新的version</strong>），然后向primary和secondaries发送新的version，并且会发给primary有效期限的租约lease。这里primary和secondaries需要将version存储到磁盘，否则重启后内存数据丢失，无法让master信服自己拥有最新version的数据(同理Master也是将version存储在磁盘中)。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Client发送数据到想写入的chunk servers(primary和secondaries)，有趣的是，<strong>这里Client只需访问最近的secondary，而这个被访问的secondary会将数据也转发到列表中的下一个chunk server</strong>，<strong>此时数据还不会真正被chunk severs存储</strong>。（即上图中间黑色粗箭头，secondary收到数据后，马上将数据推送到其他本次需要写的chunk server）<br>理解： 这么做提高了Client的吞吐量，避免Client本身需要消耗大量网络接口资源往primary和多个secondaries都发送数据。</p>
+</li>
+<li><p>数据传递完毕后，Client向primary发送一个message，表明本次为append操作。</p>
+<p>primary此时需要做几件事：</p>
+<ol>
+<li>primary此时会检查version，如果version不匹配，那么Client的操作会被拒绝</li>
+<li>primary检查<strong>lease是否还有效</strong>，如果自己的lease无效了，则不再接受任何mutation operations（因为租约无效时，外部可能已经存在一个新的primary了）</li>
+<li>如果version、lease都有效，那么primary会选择一个offset用于写入</li>
+<li>primary将前面接收到的数据写入稳定存储中</li>
+</ol>
+</li>
+<li><p>primary发送消息到secondaries，表示需要将之前接收的数据写入指定的offset（更新其他副本）</p>
+</li>
+<li><p>secondaries写入数据到primary指定的offset中，并回应primary已完成数据写入</p>
+</li>
+<li><p>primary回应Client，你想append追加的数据已完成写入</p>
+</li>
+</ol>
+<h3 id="GFS一致性"><a href="#GFS一致性" class="headerlink" title="GFS一致性"></a>GFS一致性</h3><ol>
+<li><p>appen一次之后，read返回什么结果</p>
+<p>例如： M（maseter），P（primary），S（Secondary）</p>
+<p>某时刻Mping不到P了，那咋办？ </p>
+<p>假设选出新P，那可能旧P还在和CLient交互，两个P同时存在叫做脑裂，会出现严重问题，比如数据写入顺序混乱等问题，严重的脑裂问题可能会导致系统最后出现两个Master。</p>
+<p>所以依照M知道的旧P的lease，在旧Please期限结束之前，不会选出新P，也就是M和P无法通信，但是P还可能和其他Client通信</p>
+</li>
+<li><p>强一致性的保证<br>保证 所有S都成功写入或者都不写入</p>
+</li>
+</ol>
+<p>GFS是为了运行mapreduce而设计的</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://forthdifferential.github.io">陈锴烺</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://forthdifferential.github.io/2023/11/21/GFS%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">https://forthdifferential.github.io/2023/11/21/GFS%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://forthdifferential.github.io" target="_blank">个人主页</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/imgs/$%7Bfiilename%7D/GFS/image-20230411161308484.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/imgs/head.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">陈锴烺</div><div class="author-info__description">Every man is the master of his own fortune.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/forthdifferential"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/forthdifferential" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:klchen_auto@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><center><b>---Welcome to my blog---<br></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#GFS"><span class="toc-text">GFS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CAP%E7%90%86%E8%AE%BA"><span class="toc-text">CAP理论</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AB%98%E5%AE%B9%E9%94%99%E7%9A%84%E5%AE%9E%E7%8E%B0%E9%9A%BE%E7%82%B9%EF%BC%9A"><span class="toc-text">高容错的实现难点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E5%AE%9E%E7%8E%B0%E7%9A%84%E9%9A%BE%E7%82%B9-%EF%BC%9A"><span class="toc-text">一致性实现的难点 ：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GFS%E7%AE%80%E4%BB%8B"><span class="toc-text">GFS简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GFS%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1"><span class="toc-text">GFS存储设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GFS%E7%9A%84Master%E7%9A%84%E5%B7%A5%E4%BD%9C"><span class="toc-text">GFS的Master的工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GFS%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B"><span class="toc-text">GFS数据读取流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GFS%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96"><span class="toc-text">GFS文件读取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GFS%E6%96%87%E4%BB%B6%E5%86%99%E5%85%A5"><span class="toc-text">GFS文件写入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GFS%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-text">GFS一致性</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/11/21/GFS%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" title="分布式 - GFS论文阅读"><img src="/imgs/$%7Bfiilename%7D/GFS/image-20230411161308484.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分布式 - GFS论文阅读"/></a><div class="content"><a class="title" href="/2023/11/21/GFS%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" title="分布式 - GFS论文阅读">分布式 - GFS论文阅读</a><time datetime="2023-11-21T11:01:26.674Z" title="发表于 2023-11-21 19:01:26">2023-11-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/21/MapReduce%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" title="分布式 - MapReduce论文阅读"><img src="/imgs/$%7Bfiilename%7D/MapReduce/image-20230329113648794.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分布式 - MapReduce论文阅读"/></a><div class="content"><a class="title" href="/2023/11/21/MapReduce%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" title="分布式 - MapReduce论文阅读">分布式 - MapReduce论文阅读</a><time datetime="2023-11-21T09:01:33.208Z" title="发表于 2023-11-21 17:01:33">2023-11-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/14/Mysql%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A%E8%AE%B0%E5%BD%95/" title="MySql - MySql必知必会记录"><img src="/imgs/$%7Bfiilename%7D/mysqlbizhibihui.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySql - MySql必知必会记录"/></a><div class="content"><a class="title" href="/2023/11/14/Mysql%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A%E8%AE%B0%E5%BD%95/" title="MySql - MySql必知必会记录">MySql - MySql必知必会记录</a><time datetime="2023-11-14T13:39:06.803Z" title="发表于 2023-11-14 21:39:06">2023-11-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/14/MySql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8E%9F%E7%90%86/" title="MySql - MySql数据库运行原理"><img src="/imgs/$%7Bfiilename%7D/Mysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8E%9F%E7%90%86/title.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySql - MySql数据库运行原理"/></a><div class="content"><a class="title" href="/2023/11/14/MySql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8E%9F%E7%90%86/" title="MySql - MySql数据库运行原理">MySql - MySql数据库运行原理</a><time datetime="2023-11-14T07:44:37.544Z" title="发表于 2023-11-14 15:44:37">2023-11-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" title="Linux - Linux网络编程"><img src="/imgs/$%7Bfiilename%7D/wangluobiancheng.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux - Linux网络编程"/></a><div class="content"><a class="title" href="/2023/11/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" title="Linux - Linux网络编程">Linux - Linux网络编程</a><time datetime="2023-11-14T07:12:13.923Z" title="发表于 2023-11-14 15:12:13">2023-11-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By 陈锴烺</div><div class="footer_custom_text">I wish you to become your own sun, no need to rely on who's light.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速"></a> &nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Vervel-brightgreen?style=flat&logo=Vercel" title="本站采用双线部署，默认线路托管于Vercel"></a>&nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Coding-0cedbe?style=flat&logo=Codio" title="本站采用双线部署，联通线路托管于Coding"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
